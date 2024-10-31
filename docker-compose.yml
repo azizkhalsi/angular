@@ -8,4 +8,4 @@ services:
       - "80:80"
     volumes:
       # This will mount your local nginx.conf into the container and replace the default Nginx config
-      - ./angular/nginx.conf:/etc/nginx/conf.d
+      - ./angular/default.conf:/etc/nginx/conf.d
