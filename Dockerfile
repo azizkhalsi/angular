@@ -1,28 +1,38 @@
-# Stage 1: Build the Angular App
+# Stage 1: Build Angular app
+# Use the latest Node.js image as the base for the build stage
 FROM node:latest AS build
 
-# Set working directory
+# Create the /app directory if it doesn't exist
+RUN mkdir -p /app
+
+# Set the working directory to /app, which is where the build will happen
 WORKDIR /app
 
-# Install dependencies
-COPY package.json ./
+# Copy the package.json file to the /app directory to install dependencies
+# It's important to copy only package.json first to leverage Docker's layer caching for npm install.
+COPY package.json /app/
+
+# Install the dependencies specified in package.json
 RUN npm install
 
-# Copy project files and build the Angular app
-COPY . .
-RUN npm run build --prod  # Generate production build
+# Copy the rest of the application files into the /app directory
+COPY . /app/
 
-# Stage 2: Serve the Angular App with http-server
-FROM node:alpine  # Using a lightweight Node.js image
+# Build the Angular project using npm, which will generate the production-ready files in /app/dist
+RUN npm run build
 
-# Install http-server for serving static files
-RUN npm install -g http-server
+# Stage 2: Serve the Angular app with NGINX
+# Use the latest NGINX image as the base for serving the Angular app
+FROM nginx:latest
 
-# Copy the build output to the new container
-COPY --from=build /app/dist/angular-project /usr/share/app
+# Copy the built Angular app from the build stage (located in /app/dist) to NGINX's default html directory
+COPY --from=build /app/dist/angular /usr/share/nginx/html
 
-# Expose port 80 to the outside world
+# Expose port 80 to allow traffic to the NGINX web server
 EXPOSE 80
 
-# Command to run http-server and serve static files
-CMD ["http-server", "/usr/share/app", "-p", "80"]
+# Start NGINX in the foreground (this is required to keep the container running)
+CMD ["nginx", "-g", "daemon off;"]
+
+
+my repo is named angular in github so is this correct ? because this part ididnt know where i know it : YOUR_PROJECT_NAME 
