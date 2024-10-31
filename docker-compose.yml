@@ -1,16 +1,9 @@
-version: '3.8'  # (This should be fine. It's only a warning to remove it.)
+version: '3'
 
 services:
-  angular-app:
-    image: khalsiaziz/angular-app:latest
+  angular-frontend:
+    image: khalsiaziz/angular-app:latest  # Replace with your correct image and tag
     container_name: angular-frontend
     restart: always
     ports:
-      - '80:80'  # Host port mapping to container port
-    volumes:
-      # Ensure we're mounting nginx.conf as a file and not as a directory
-      - ./angular/nginx.conf:/etc/nginx/conf.d/default.conf:ro  # Mount the file correctly
-
-    # Optional: Environmental variables for app configuration
-    environment:
-      - NODE_ENV=production
+      - '80:80'  # Mapping port 80 inside the container to port 80 on the host machine
