@@ -19,7 +19,7 @@ FROM nginx:latest
 COPY --from=build /app/dist/angular-project /usr/share/nginx/html
 
 # Copy custom Nginx configuration
-COPY angular/nginx.conf /etc/nginx/conf.d/default.conf  # Ensure correct relative path
+COPY nginx.conf /etc/nginx/conf.d/default.conf  # Remove the 'angular/' prefix
 
 # Expose port 80
 EXPOSE 80
