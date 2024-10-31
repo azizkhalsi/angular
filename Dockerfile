@@ -25,6 +25,9 @@ RUN npm run build
 # Use the latest NGINX image as the base for serving the Angular app
 FROM nginx:latest
 
+# Copy custom nginx configuration file (make sure you have it in your Angular project folder)
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+
 # Copy the built Angular app from the build stage (located in /app/dist) to NGINX's default html directory
 COPY --from=build /app/dist/angular-project /usr/share/nginx/html
 
