@@ -1,3 +1,5 @@
+# Dockerfile inside angular/ directory
+
 # Stage 1: Build the Angular app
 FROM node:latest AS build
 
@@ -17,9 +19,6 @@ FROM nginx:latest
 
 # Copy built Angular files to the NGINX html directory
 COPY --from=build /app/dist/angular-project /usr/share/nginx/html
-
-# Copy custom Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf  # Remove the 'angular/' prefix
 
 # Expose port 80
 EXPOSE 80
