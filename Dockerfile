@@ -33,6 +33,3 @@ EXPOSE 80
 
 # Start NGINX in the foreground (this is required to keep the container running)
 CMD ["nginx", "-g", "daemon off;"]
-
-
-my repo is named angular in github so is this correct ? because this part ididnt know where i know it : YOUR_PROJECT_NAME 
