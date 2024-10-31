@@ -1,9 +1,17 @@
-version: '3'
+version: '3.8'  # You can adjust the version based on your needs
 
 services:
-  angular-frontend:
-    image: khalsiaziz/angular-app:latest  # Replace with your correct image and tag
+  angular-app:
+    image: khalsiaziz/angular-app:latest
     container_name: angular-frontend
     restart: always
     ports:
-      - '80:80'  # Mapping port 80 inside the container to port 80 on the host machine
+      - '80:80'  # Host port 80 to container port 80
+    volumes:
+      # This will mount the custom nginx.conf from your host system (angular/nginx.conf)
+      # to the NGINX config location inside the container
+      - ./angular/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+    # Optional: adding something like this to ensure NGINX and Node.js serve static content correctly
+    environment:
+      - NODE_ENV=production
