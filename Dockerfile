@@ -24,6 +24,8 @@ RUN npm run build
 # Stage 2: Serve the app with NGINX
 FROM nginx:alpine as production-stage
 
+RUN rm /etc/nginx/conf.d/default.conf
+
 # Copy custom nginx configuration file (make sure you have it in your Angular project folder)
 COPY nginx.conf /etc/nginx/conf.d/nginx.conf
 
