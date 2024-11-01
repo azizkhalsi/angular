@@ -28,7 +28,7 @@ FROM nginx:alpine as production-stage
 COPY nginx.conf /etc/nginx/conf.d/nginx.conf
 
 # Copy the built Angular app from the build stage (located in /app/dist) to NGINX's default html directory
-COPY --from=build /app/dist/angular-project /usr/share/nginx/html
+COPY --from=build /app/dist/angular-project/browser /usr/share/nginx/html
 
 # Expose port 80 to allow traffic to the NGINX web server
 EXPOSE 80
