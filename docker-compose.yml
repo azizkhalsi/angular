@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  angular-frontend:
+    image: khalsiaziz/angular-app:latest
+    container_name: angular-frontend
+    restart: always
+    ports:
+      - "80:80" # Expose your container's port 80 to the host's port 80
+
+   
