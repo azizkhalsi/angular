@@ -5,7 +5,7 @@ services:
     container_name: angular-frontend
     restart: always
     ports:
-      - "80:80" # Expose your container's port 80 to the host's port 80
+      - "4200:80" # Expose your container's port 80 to the host's port 80
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
    
