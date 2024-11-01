@@ -21,9 +21,8 @@ COPY . /app/
 # Build the Angular project using npm, which will generate the production-ready files in /app/dist
 RUN npm run build
 
-# Stage 2: Serve the Angular app with NGINX
-# Use the latest NGINX image as the base for serving the Angular app
-FROM nginx:latest
+# Stage 2: Serve the app with NGINX
+FROM nginx:alpine as production-stage
 
 # Copy custom nginx configuration file (make sure you have it in your Angular project folder)
 COPY nginx.conf /etc/nginx/conf.d/nginx.conf
