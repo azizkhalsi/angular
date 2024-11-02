@@ -1,9 +1,8 @@
-version: '3'
 services:
   angular-app:
     image: khalsiaziz/angular-app:latest
-    build: .  # This will build from the current directory with Dockerfile
+    build: .
     ports:
       - "4200:4200"
     container_name: angular-container
-    restart: always  # Makes sure the container restarts if the server or Docker crashes
+    restart: always  # This ensures that the container is restarted automatically if needed
