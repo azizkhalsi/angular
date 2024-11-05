@@ -4,17 +4,18 @@ pipeline {
     environment {
         GIT_REPO_URL = "https://github.com/azizkhalsi/angular-project.git"
         GIT_BRANCH = "hadil-amamou"
-        DOCKER_IMAGE_NAME = "hadilapp"  // Docker image name as per your request
+        DOCKER_IMAGE_NAME = "hadilapp"  // Docker image name
         DOCKER_TAG = "latest"
         DOCKER_HUB_USERNAME = "hamamou99"  // Docker Hub username
-        DOCKER_HUB_PASSWORD = credentials('docker-hub-password')  // Jenkins credentials for Docker Hub password
+        DOCKER_HUB_PASSWORD = credentials('dockerhub-creds')  // Docker Hub credentials from Jenkins
+        GITHUB_CREDENTIALS = credentials('github-creds')  // GitHub credentials from Jenkins
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                // Clone the GitHub repository at the specified branch
-                git url: GIT_REPO_URL, branch: GIT_BRANCH
+                // Checkout the code from the GitHub repository using GitHub credentials
+                git credentialsId: 'github-creds', url: GIT_REPO_URL, branch: GIT_BRANCH
             }
         }
 
@@ -32,7 +33,7 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
-                    // Login to Docker Hub
+                    // Login to Docker Hub using the credentials
                     sh """
                         echo ${DOCKER_HUB_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin
                     """
