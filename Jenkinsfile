@@ -31,4 +31,25 @@ pipeline {
                     // Use the Docker Hub credentials to log in and push the image
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
                         sh '''
-                        echo "$
+                        echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+                        docker push ${DOCKER_HUB_REPO}:latest
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Docker image pushed successfully to Docker Hub."
+        }
+        failure {
+            echo "Pipeline failed. Please check the logs."
+        }
+        cleanup {
+            // Optional: Clean up unused Docker resources
+            sh "docker system prune -f"
+        }
+    }
+}
