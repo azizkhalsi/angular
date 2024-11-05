@@ -1,6 +1,6 @@
 services:
   angular-app:
-    image: khalsiaziz/angular-app:latest
+    image: hamamou99/hadil-app:latest
     build: .
     ports:
       - "4200:4200"
