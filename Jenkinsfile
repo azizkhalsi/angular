@@ -6,7 +6,7 @@ pipeline {
         DOCKER_HUB_REPO = "hamamou99/${IMAGE_NAME}"
         SONARQUBE_SERVER = 'sonarqube'  // Name of your SonarQube server configured in Jenkins
         SONARQUBE_PROJECT_KEY = 'hadil-app'  // Your project key in SonarQube
-        SONARQUBE_PROJECT_NAME = 'Hadil App'  // Your project name in SonarQube
+        SONARQUBE_PROJECT_NAME = 'hadil App'  // Your project name in SonarQube
         SONARQUBE_LOGIN = credentials('sonarqube-token')  // Jenkins credential for SonarQube token
     }
 
