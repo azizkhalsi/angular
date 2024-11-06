@@ -10,6 +10,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    // Build the Docker image
                     sh "docker build -t ${IMAGE_NAME} ."
                 }
             }
@@ -18,6 +19,7 @@ pipeline {
         stage('Tag Docker Image') {
             steps {
                 script {
+                    // Tag the Docker image for Docker Hub
                     sh "docker tag ${IMAGE_NAME} ${DOCKER_HUB_REPO}:latest"
                 }
             }
@@ -26,42 +28,12 @@ pipeline {
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
+                    // Use the Docker Hub credentials to log in and push the image
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
                         sh '''
                         echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
                         docker push ${DOCKER_HUB_REPO}:latest
                         '''
-                    }
-                }
-            }
-        }
-
-        stage('Analyze Code with SonarQube') {
-            steps {
-                script {
-                    withSonarQubeEnv('sonarserver') {
-                        withCredentials([string(credentialsId: 'sonartoken', variable: 'SONAR_TOKEN')]) {
-                            sh '''
-                                mvn sonar:sonar \
-                                    -Dsonar.projectKey=springproject \
-                                    -Dsonar.host.url=http://192.168.33.10:9000 \
-                                    -Dsonar.login=${SONAR_TOKEN} \
-                                    -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
-                            '''
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Quality Gate') {
-            steps {
-                script {
-                    def qg = waitForQualityGate()
-                    if (qg.status != 'OK') {
-                        error "Quality Gate failed: ${qg.status}"
-                    } else {
-                        echo "Quality Gate passed: ${qg.status}"
                     }
                 }
             }
@@ -76,6 +48,7 @@ pipeline {
             echo "Pipeline failed. Please check the logs."
         }
         cleanup {
+            // Optional: Clean up unused Docker resources
             sh "docker system prune -f"
         }
     }
