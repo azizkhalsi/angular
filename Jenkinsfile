@@ -6,7 +6,7 @@ pipeline {
         DOCKER_HUB_REPO = "hamamou99/${IMAGE_NAME}"
         SONARQUBE_SERVER = 'sonarqube'  // Name of your SonarQube server configured in Jenkins
         SONARQUBE_PROJECT_KEY = 'hadil-app'  // Your SonarQube project key
-        SONARQUBE_PROJECT_NAME = 'Hadil App'  // Your SonarQube project name
+        SONARQUBE_PROJECT_NAME = 'hadil App'  // Your SonarQube project name
         SONARQUBE_LOGIN = credentials('sonar-token')  // Jenkins credential for SonarQube token
     }
 
@@ -28,7 +28,7 @@ pipeline {
                                 mvn sonar:sonar \
                                     -Dsonar.projectKey=${SONARQUBE_PROJECT_KEY} \
                                     -Dsonar.projectName=${SONARQUBE_PROJECT_NAME} \
-                                    -Dsonar.host.url=http://192.168.154.130:9000 \
+                                    -Dsonar.host.url=http://192.168.33.10:9000 \
                                     -Dsonar.login=${SONAR_TOKEN} \
                                     -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
                             '''
