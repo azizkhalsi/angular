@@ -5,35 +5,55 @@ pipeline {
         IMAGE_NAME = "hadil-app"
         DOCKER_HUB_REPO = "hamamou99/${IMAGE_NAME}"
         SONARQUBE_SERVER = 'sonarqube'  // Name of your SonarQube server configured in Jenkins
-        SONARQUBE_PROJECT_KEY = 'hadil-app'  // Your project key in SonarQube
-        SONARQUBE_PROJECT_NAME = 'hadil App'  // Your project name in SonarQube
-        SONARQUBE_LOGIN = credentials('sonarqube-token')  // Jenkins credential for SonarQube token
+        SONARQUBE_PROJECT_KEY = 'hadil-app'  // Your SonarQube project key
+        SONARQUBE_PROJECT_NAME = 'Hadil App'  // Your SonarQube project name
+        SONARQUBE_LOGIN = credentials('sonar-token')  // Jenkins credential for SonarQube token
     }
 
     stages {
+        // Stage to checkout code from GitHub
         stage('Checkout Code') {
             steps {
-                // Checkout the code from your repository
                 checkout scm
             }
         }
 
-        stage('SonarQube Analysis') {
+        // Stage 5: Analyze Code with SonarQube using Maven
+        stage('MVN SonarQube') {
             steps {
                 script {
-                    // Run SonarQube analysis
-                    withSonarQubeEnv(SONARQUBE_SERVER) {
-                        sh """
-                            sonar-scanner \
-                            -Dsonar.projectKey=${SONARQUBE_PROJECT_KEY} \
-                            -Dsonar.projectName=${SONARQUBE_PROJECT_NAME} \
-                            -Dsonar.login=${SONARQUBE_LOGIN}
-                        """
+                    withSonarQubeEnv('sonarqube') {  // Use the SonarQube server configured in Jenkins
+                        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                            sh '''
+                                mvn sonar:sonar \
+                                    -Dsonar.projectKey=${SONARQUBE_PROJECT_KEY} \
+                                    -Dsonar.projectName=${SONARQUBE_PROJECT_NAME} \
+                                    -Dsonar.host.url=http://192.168.154.130:9000 \
+                                    -Dsonar.login=${SONAR_TOKEN} \
+                                    -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+                            '''
+                        }
                     }
                 }
             }
         }
 
+        // Stage: Quality Gate Check
+        stage('Quality Gate') {
+            steps {
+                script {
+                    // Wait for the Quality Gate result
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                        error "Quality Gate failed: ${qg.status}"
+                    } else {
+                        echo "Quality Gate passed: ${qg.status}"
+                    }
+                }
+            }
+        }
+
+        // Stage: Build Docker Image
         stage('Build Docker Image') {
             steps {
                 script {
@@ -43,6 +63,7 @@ pipeline {
             }
         }
 
+        // Stage: Tag Docker Image
         stage('Tag Docker Image') {
             steps {
                 script {
@@ -52,6 +73,7 @@ pipeline {
             }
         }
 
+        // Stage: Push Docker Image to Docker Hub
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
