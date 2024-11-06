@@ -38,11 +38,20 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy with Docker Compose') {
+            steps {
+                script {
+                    // Run Docker Compose to deploy the application
+                    sh 'docker-compose -f docker-compose.yml up -d'
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo "Docker image pushed successfully to Docker Hub."
+            echo "Docker image pushed successfully to Docker Hub and deployed with Docker Compose."
         }
         failure {
             echo "Pipeline failed. Please check the logs."
